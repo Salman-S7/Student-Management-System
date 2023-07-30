@@ -34,6 +34,46 @@ public class Operations {
         }
     }
     public static void updateData(Connection connection){
+        System.out.println("enter the roll number of student you want to update data of");
+        int rollNum = sc.nextInt();
+        System.out.println("Enter 1 for name updation\n" +
+                "enter 2 for city updation\n");
+        int choice = sc.nextInt();
+       // String sqlUpdate = rollNum == 1?"update students set name=? where rollNum=?": rollNum==2?"update students set city=? where rollNum=?" ;
+
+        try {
+            PreparedStatement preparedStatement;
+            String sqlUpdate;
+            if(choice == 1){
+                sqlUpdate = "update students set name=? where rollNum=?";
+                preparedStatement= connection.prepareStatement(sqlUpdate);
+                System.out.println("enter updated name");
+                String name = sc.next();
+                preparedStatement.setString(1,name);
+                preparedStatement.setInt(2,rollNum);
+                //System.out.println(preparedStatement.executeUpdate());
+                if(preparedStatement.executeUpdate()>0)
+                    System.out.println("name updated");
+
+
+            } else if (choice==2) {
+                sqlUpdate = "update students set city=? where rollNum=?";
+                preparedStatement = connection.prepareStatement(sqlUpdate);
+                System.out.println("enter updated city name");
+                String city = sc.next();
+                preparedStatement.setString(1, city);
+                preparedStatement.setInt(2, rollNum);
+                if(preparedStatement.executeUpdate()>0)
+                    System.out.println("city updated");
+            }
+
+
+
+        } catch (SQLException e) {
+            System.out.println("Student with given roll number doesnt exists\n" +
+                    "try again");
+            updateData(connection);
+        }
 
 
     }
@@ -75,6 +115,24 @@ public class Operations {
     }
 
     public static void deleteData(Connection connection){
+        System.out.println("enter roll number of student that you want to delete");
+        int rollNum = sc.nextInt();
+        String sqlDelete = "delete from students where rollNUm = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlDelete);
+            preparedStatement.setInt(1,rollNum);
+            int rowAffected = preparedStatement.executeUpdate();
+            //System.out.println("rows affected are "+rowAffected );
+            if(rowAffected>0){
+                System.out.println("student deleted");
+            }else {
+                System.out.println("failed to delete student");
+            }
+        } catch (SQLException e) {
+            System.out.println("student with given roll number do not exists\n" +
+                    "try another roll number ");
+        }
+
 
     }
 }
